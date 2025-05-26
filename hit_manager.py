@@ -14,19 +14,28 @@ class HitManager:
         Returns:
             bool: True if hit was successful, False otherwise
         """
-        if set_idx >= len(target_player.laid_down_sets):
+        # Check if target has laid down any sets
+        if not target_player.has_laid_down or set_idx >= len(target_player.laid_down_sets):
             return False
             
-        target_set = target_player.laid_down_sets[set_idx]
+        # Check if source player has the card
         if card not in source_player.hand.cards:
             return False
-
-        # Validate the hit
-        test_set = target_set + [card]
-        if not PhaseValidator._validate_set(test_set) and not PhaseValidator._validate_run(test_set):
-            return False
-
-        # Execute the hit
+        
+        target_set = target_player.laid_down_sets[set_idx].copy()
         target_set.append(card)
-        source_player.hand.remove(card)
-        return True
+        
+        # First try to validate as a set
+        if PhaseValidator._validate_set(target_set):
+            source_player.hand.remove(card)
+            target_player.laid_down_sets[set_idx] = target_set
+            return True
+        
+        # Then try to validate as a run
+        if PhaseValidator._validate_run(target_set):
+            source_player.hand.remove(card)
+            target_player.laid_down_sets[set_idx] = target_set
+            return True
+        
+        # If we can't hit on this set, return False
+        return False
