@@ -27,6 +27,13 @@ def main():
                 else:
                     print("Discard pile is empty.")
 
+            # Display the top card of the discard pile
+            top_discard = game.get_top_discard()
+            if top_discard:
+                print(f"Top of discard pile: {top_discard}")
+            else:
+                print("Discard pile is empty.")
+
             # Placeholder for laying down sets/runs and hitting on other players
             discard_index = int(input("Choose a card index to discard: "))
             current_player.discard_card(game.deck, discard_index)
