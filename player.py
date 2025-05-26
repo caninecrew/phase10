@@ -40,27 +40,11 @@ class Player:
 
         print(f"{self.name} attempted to lay down an invalid phase.")
         return False
-
+    
     def validate_phase(self, groups):
-        """Simplified: only phase 1 = two sets of 3. Expand later."""
-        if self.current_phase == 1:
-            return self._validate_sets(groups, [3, 3])
-        return False  # Placeholder for later phases
-
-    def _validate_sets(self, groups, required_sizes):
-        if len(groups) != len(required_sizes):
-            return False
-        for group, size in zip(groups, required_sizes):
-            if len(group) != size:
-                return False
-            numbers = [c.number for c in group if c.card_type == 'number']
-            if not numbers:
-                return False
-            num_set = set(numbers)
-            wilds = sum(1 for c in group if c.card_type == 'wild')
-            if len(num_set) > 1 and wilds == 0:
-                return False
-        return True
+        """Validate if the given groups satisfy the requirements for the current phase."""
+        from phase_validator import PhaseValidator
+        return PhaseValidator.validate_phase(self.current_phase, groups)
 
     def show_hand(self):
         print(f"{self.name}'s hand: {self.hand}")
