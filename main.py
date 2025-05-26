@@ -22,6 +22,19 @@ class Deck:
         import random
         random.shuffle(self.cards)
 
+    def draw(self):
+        if not self.cards:
+            self.reshuffle_discard()
+        return self.cards.pop() if self.cards else None
+    
+    def reshuffle_discard(self):
+        if len(self.discard_pile) <= 1:
+            return # Leave the last card in the discard pile
+        top_card = self.discard_pile.pop()
+        self.cards = self.discard_pile # Take all but the last card from discard pile
+        self.discard_pile = [top_card] # Leave one on discard pile
+        self.shuffle()
+        
 class Card:
     _id_counter = 0
 
