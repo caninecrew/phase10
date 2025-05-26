@@ -164,7 +164,116 @@ def test_deck():
     print(f"✅ Remaining discard pile (should be 1): {len(deck.discard_pile)}")
     print(f"🃏 Top card in discard pile: {deck.discard_pile[0] if deck.discard_pile else 'None'}")
 
+def test_laid_down_sets():
+    """Test LaidDownSet functionality"""
+    from laiddownset import LaidDownSet
+    print("\n🎲 Testing laid down sets...")
+    Card.reset_id_counter()
+    
+    # Test valid set creation
+    print("\nTesting valid set creation...")
+    set_cards = [
+        Card('number', 'red', 5),
+        Card('number', 'blue', 5),
+        Card('number', 'green', 5)
+    ]
+    valid_set = LaidDownSet(set_cards, 'set')
+    print(f"Created set: {valid_set}")
+    assert len(valid_set) == 3, "Set should have 3 cards"
+    
+    # Test valid run creation
+    print("\nTesting valid run creation...")
+    run_cards = [
+        Card('number', 'red', 3),
+        Card('number', 'blue', 4),
+        Card('number', 'green', 5),
+        Card('number', 'yellow', 6)
+    ]
+    valid_run = LaidDownSet(run_cards, 'run')
+    print(f"Created run: {valid_run}")
+    assert len(valid_run) == 4, "Run should have 4 cards"
+    
+    # Test valid color set creation
+    print("\nTesting valid color set creation...")
+    color_cards = [
+        Card('number', 'red', 3),
+        Card('number', 'red', 5),
+        Card('number', 'red', 7)
+    ]
+    valid_color = LaidDownSet(color_cards, 'color')
+    print(f"Created color set: {valid_color}")
+    assert len(valid_color) == 3, "Color set should have 3 cards"
+    
+    # Test invalid set creation
+    print("\nTesting invalid set creation...")
+    invalid_set_cards = [
+        Card('number', 'red', 5),
+        Card('number', 'blue', 6),
+        Card('number', 'green', 5)
+    ]
+    try:
+        invalid_set = LaidDownSet(invalid_set_cards, 'set')
+        assert False, "Should raise ValueError for invalid set"
+    except ValueError:
+        print("✅ Correctly caught invalid set")
+    
+    # Test invalid run creation
+    print("\nTesting invalid run creation...")
+    invalid_run_cards = [
+        Card('number', 'red', 3),
+        Card('number', 'blue', 4),
+        Card('number', 'green', 6),  # Gap in sequence
+        Card('number', 'yellow', 7)
+    ]
+    try:
+        invalid_run = LaidDownSet(invalid_run_cards, 'run')
+        assert False, "Should raise ValueError for invalid run"
+    except ValueError:
+        print("✅ Correctly caught invalid run")
+    
+    # Test invalid color set creation
+    print("\nTesting invalid color set creation...")
+    invalid_color_cards = [
+        Card('number', 'red', 3),
+        Card('number', 'blue', 5),  # Different color
+        Card('number', 'red', 7)
+    ]
+    try:
+        invalid_color = LaidDownSet(invalid_color_cards, 'color')
+        assert False, "Should raise ValueError for invalid color set"
+    except ValueError:
+        print("✅ Correctly caught invalid color set")
+    
+    # Test adding cards
+    print("\nTesting adding cards...")
+    set_cards = [
+        Card('number', 'red', 5),
+        Card('number', 'blue', 5)
+    ]
+    test_set = LaidDownSet(set_cards, 'set')
+    test_set.add_card(Card('number', 'green', 5))
+    assert len(test_set) == 3, "Set should have 3 cards after addition"
+    
+    # Test removing cards
+    print("\nTesting removing cards...")
+    removed = test_set.remove_card(set_cards[0])
+    assert removed, "Card removal should return True"
+    assert len(test_set) == 2, "Set should have 2 cards after removal"
+
+def test_all():
+    """Run all tests"""
+    print("🎮 Starting comprehensive tests...")
+    
+    try:
+        test_sets()
+        test_runs()
+        test_edge_cases()
+        test_laid_down_sets()
+        print("\n✅ All tests passed!")
+    except AssertionError as e:
+        print(f"\n❌ Test failed: {str(e)}")
+        
 if __name__ == "__main__":
-    test_hand()
+    test_all()
     print("\n" + "="*50 + "\n")
     test_deck()
