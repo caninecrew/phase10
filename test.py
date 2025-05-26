@@ -260,6 +260,87 @@ def test_laid_down_sets():
     assert removed, "Card removal should return True"
     assert len(test_set) == 2, "Set should have 2 cards after removal"
 
+def test_player():
+    """Test Player functionality"""
+    from player import Player
+    print("\n👤 Testing player functionality...")
+    Card.reset_id_counter()
+    deck = Deck()
+    
+    # Test player creation
+    print("\nTesting player creation...")
+    player = Player("Test Player")
+    assert player.name == "Test Player", "Player name not set correctly"
+    assert player.current_phase == 1, "Initial phase should be 1"
+    assert not player.has_laid_down, "Player should not start laid down"
+    assert len(player.laid_down_sets) == 0, "Should start with no laid down sets"
+    
+    # Test drawing cards
+    print("\nTesting drawing cards...")
+    initial_hand_size = len(player.hand)
+    player.draw_card(deck)
+    assert len(player.hand) == initial_hand_size + 1, "Hand size should increase after drawing"
+    
+    # Test discarding cards
+    print("\nTesting discarding cards...")
+    player.draw_card(deck)  # Draw a card to ensure we have one
+    initial_hand_size = len(player.hand)
+    player.discard_card(deck, 0)  # Discard first card
+    assert len(player.hand) == initial_hand_size - 1, "Hand size should decrease after discarding"
+    assert len(deck.discard_pile) > 0, "Card should be in discard pile"
+    
+    # Test laying down valid phase 1 (two sets of 3)
+    print("\nTesting laying down valid phase 1...")
+    # Clear hand and add specific cards for phase 1
+    player.hand.cards.clear()
+    # First set of three 5s
+    player.hand.add(Card('number', 'red', 5))
+    player.hand.add(Card('number', 'blue', 5))
+    player.hand.add(Card('number', 'green', 5))
+    # Second set of three 7s
+    player.hand.add(Card('number', 'red', 7))
+    player.hand.add(Card('number', 'blue', 7))
+    player.hand.add(Card('number', 'green', 7))
+    
+    # Create groups for laying down
+    set1 = [c for c in player.hand.cards if c.number == 5]
+    set2 = [c for c in player.hand.cards if c.number == 7]
+    success = player.lay_down([set1, set2])
+    assert success, "Valid phase 1 should be accepted"
+    assert player.has_laid_down, "Player should be marked as laid down"
+    assert len(player.laid_down_sets) == 2, "Should have 2 sets laid down"
+    
+    # Test laying down invalid phase
+    print("\nTesting laying down invalid phase...")
+    player = Player("Test Player 2")  # New player since previous one laid down
+    # Add mixed cards that don't form valid sets
+    player.hand.add(Card('number', 'red', 5))
+    player.hand.add(Card('number', 'blue', 6))
+    player.hand.add(Card('number', 'green', 7))
+    player.hand.add(Card('number', 'red', 8))
+    invalid_set = player.hand.cards
+    success = player.lay_down([invalid_set])
+    assert not success, "Invalid phase should be rejected"
+    assert not player.has_laid_down, "Player should not be marked as laid down"
+    assert len(player.laid_down_sets) == 0, "Should have no sets laid down"
+    
+    # Test laying down with wild cards
+    print("\nTesting laying down with wild cards...")
+    player = Player("Test Player 3")
+    player.hand.add(Card('number', 'red', 5))
+    player.hand.add(Card('number', 'blue', 5))
+    player.hand.add(Card('wild', None, None))  # Wild card completing set
+    player.hand.add(Card('number', 'red', 7))
+    player.hand.add(Card('number', 'blue', 7))
+    player.hand.add(Card('wild', None, None))  # Wild card completing set
+    
+    set1 = player.hand.cards[:3]  # First set with wild
+    set2 = player.hand.cards[3:]  # Second set with wild
+    success = player.lay_down([set1, set2])
+    assert success, "Valid phase with wild cards should be accepted"
+    assert player.has_laid_down, "Player should be marked as laid down"
+    assert len(player.laid_down_sets) == 2, "Should have 2 sets laid down"
+
 def test_all():
     """Run all tests"""
     print("🎮 Starting comprehensive tests...")
@@ -269,6 +350,7 @@ def test_all():
         test_runs()
         test_edge_cases()
         test_laid_down_sets()
+        test_player()
         print("\n✅ All tests passed!")
     except AssertionError as e:
         print(f"\n❌ Test failed: {str(e)}")
