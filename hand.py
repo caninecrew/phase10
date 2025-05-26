@@ -25,29 +25,36 @@ class Hand:
     
     def sort(self):
         """Sort the hand by color and number."""
-        self.cards.sort(key=lambda c: (c.color or 'zzz', c.number or 99)) # Sort by color, then by number
+        self.cards.sort(key=lambda c: (c.color or 'zzz', c.number or 99))  # Sort by color, then by number
 
     def find_sets(self, size=3):
         """Find sets of cards in the hand of a given size.
-        Returns a list of lists containing card IDs that form sets."""
+        Returns a list of lists containing card IDs that form sets.
+        Returns ALL possible combinations of 'size' cards for when there are 
+        more than 'size' cards with the same number.
+
+        Args:
+            size (int, optional): The size of sets to find. Defaults to 3.
+
+        Returns:
+            list[list[int]]: A list of lists, where each inner list contains card IDs 
+                             that form a valid set of the specified size.
+        """
         from collections import defaultdict
+        from itertools import combinations
         by_number = defaultdict(list)
         results = []
         
-        # Group cards by number
+        # Group cards by number (excluding wild and skip cards)
         for card in self.cards:
-            by_number[card.number].append(card.id)
+            if card.card_type == 'number' and card.number is not None:
+                by_number[card.number].append(card.id)
         
         # For each group of same-numbered cards
         for card_ids in by_number.values():
             if len(card_ids) >= size:
-                # Split into sets of exactly 'size' cards
-                num_sets = len(card_ids) // size
-                for i in range(num_sets):
-                    start = i * size
-                    end = start + size
-                    if end <= len(card_ids):
-                        results.append(card_ids[start:end])
+                # Get all possible combinations of size cards
+                results.extend(list(combo) for combo in combinations(sorted(card_ids), size))
         
         return results
     
