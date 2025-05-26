@@ -5,14 +5,16 @@ from player import Player
 from board import GameBoard
 from phase_validator import PhaseValidator
 from hit_manager import HitManager
+from bot.bot import BotPlayer
 
 class Game:
-    def __init__(self, player_names: List[str]):
-        """Initialize the game with a list of player names."""
-        if len(player_names) < 2 or len(player_names) > 6:
+    def __init__(self, player_names: List[str], bot_count: int = 0):
+        """Initialize the game with human and bot players."""
+        if len(player_names) + bot_count < 2 or len(player_names) + bot_count > 6:
             raise ValueError("Phase 10 requires 2-6 players")
 
         self.players = [Player(name) for name in player_names]
+        self.players += [BotPlayer(f"Bot {i+1}") for i in range(bot_count)]
         self.deck = Deck()
         self.board = GameBoard()
         self.current_player_idx = 0
@@ -151,6 +153,10 @@ class Game:
             'deck_size': len(self.deck.cards),
             'top_discard': str(self.deck.discard_pile[-1]) if self.deck.discard_pile else None
         }
+
+    def get_top_discard(self):
+        """Return the top card of the discard pile, or None if the pile is empty."""
+        return self.deck.discard_pile[-1] if self.deck.discard_pile else None
 
     def __str__(self):
         """Return a string representation of the game state."""
