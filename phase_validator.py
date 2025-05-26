@@ -61,10 +61,10 @@ class PhaseValidator:
         wild_count = len(wilds)
         gaps = 0
 
-        for i in range(len(numbers) - 1):
-            gaps += numbers[i + 1] - numbers[i] - 1
+        for i in range(len(numbers) - 1):            gaps += numbers[i + 1] - numbers[i] - 1
+        return gaps <= wild_count
 
-        return gaps <= wild_count    @staticmethod
+    @staticmethod
     def _validate_color_set(cards):
         """Validate that cards are all the same color."""
         number_cards = [c for c in cards if c.card_type == 'number']
