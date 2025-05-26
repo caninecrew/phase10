@@ -16,5 +16,5 @@ class Card:
         elif self.card_type == 'wild':
             return f'Wild (ID: {self.id})'
         else:
-            "Unknown Card"
+            return f"Unknown Card (ID: {self.id})"
     
