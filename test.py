@@ -341,15 +341,15 @@ def test_player():
     assert player.has_laid_down, "Player should be marked as laid down"
     assert len(player.laid_down_sets) == 2, "Should have 2 sets laid down"
 
-def test_gameboard():
-    """Test GameBoard functionality"""
-    from gameboard import GameBoard
-    print("\n🎮 Testing game board functionality...")
+def test_game():
+    """Test Game functionality"""
+    from gameboard import Game, PhaseValidator, HitManager
+    print("\n🎮 Testing game functionality...")
     
     # Test game initialization
     print("\nTesting game initialization...")
     player_names = ["Player 1", "Player 2", "Player 3"]
-    game = GameBoard(player_names)
+    game = Game(player_names)
     assert len(game.players) == 3, "Should create correct number of players"
     assert all(len(p.hand) == 10 for p in game.players), "Each player should have 10 cards"
     
@@ -386,31 +386,117 @@ def test_gameboard():
     assert 'scores' in state, "Game state should include scores"
     assert 'players' in state, "Game state should include player info"
     
-    # Test wild card validation
-    print("\nTesting wild card usage...")
+    print("✅ Game functionality tests passed!")
+
+def test_phase_validator():
+    """Test PhaseValidator functionality"""
+    from gameboard import PhaseValidator
+    print("\n🎯 Testing phase validator...")
+    
+    # Test set validation
+    print("\nTesting set validation...")
     set_with_wild = [
         Card('number', 'red', 5),
         Card('number', 'blue', 5),
         Card('wild', None, None)
     ]
-    assert game._validate_set(set_with_wild), "Should accept set with wild card"
+    assert PhaseValidator._validate_set(set_with_wild), "Should accept set with wild card"
     
+    # Test run validation
+    print("\nTesting run validation...")
     run_with_wild = [
         Card('number', 'red', 3),
         Card('wild', None, None),
         Card('number', 'blue', 5),
         Card('number', 'green', 6)
     ]
-    assert game._validate_run(run_with_wild), "Should accept run with wild card"
+    assert PhaseValidator._validate_run(run_with_wild), "Should accept run with wild card"
     
+    # Test color validation
+    print("\nTesting color validation...")
     color_with_wild = [
         Card('number', 'red', 3),
         Card('number', 'red', 5),
         Card('wild', None, None)
     ]
-    assert game._validate_color(color_with_wild), "Should accept color set with wild card"
+    assert PhaseValidator._validate_color(color_with_wild), "Should accept color set with wild card"
     
-    print("✅ GameBoard tests passed!")
+    # Test phase requirements
+    print("\nTesting phase requirements...")
+    for phase_num in range(1, 11):
+        assert phase_num in PhaseValidator.PHASE_REQUIREMENTS, f"Phase {phase_num} should be defined"
+    
+    print("✅ Phase validator tests passed!")
+
+def test_hit_manager():
+    """Test HitManager functionality"""
+    from gameboard import HitManager
+    print("\n🎯 Testing hit manager...")
+    
+    # Set up players and cards
+    player1 = Player("Player 1")
+    player2 = Player("Player 2")
+    
+    # Create a laid down set for player 2
+    set_cards = [
+        Card('number', 'red', 5),
+        Card('number', 'blue', 5),
+        Card('number', 'green', 5)
+    ]
+    player2.laid_down_sets.append(set_cards)
+    
+    # Give player 1 a matching card
+    hit_card = Card('number', 'yellow', 5)
+    player1.hand.add(hit_card)
+    
+    # Test valid hit
+    print("\nTesting valid hit...")
+    success = HitManager.try_hit(player1, player2, 0, hit_card)
+    assert success, "Should accept valid hit"
+    assert len(player2.laid_down_sets[0]) == 4, "Target set should have one more card"
+    assert hit_card not in player1.hand.cards, "Card should be removed from source player's hand"
+    
+    # Test invalid hit (wrong number)
+    print("\nTesting invalid hit...")
+    wrong_card = Card('number', 'red', 6)
+    player1.hand.add(wrong_card)
+    success = HitManager.try_hit(player1, player2, 0, wrong_card)
+    assert not success, "Should reject invalid hit"
+    assert wrong_card in player1.hand.cards, "Card should remain in source player's hand"
+    
+    print("✅ Hit manager tests passed!")
+
+def test_game_board():
+    """Test GameBoard functionality"""
+    from gameboard import GameBoard
+    print("\n🎮 Testing game board...")
+    
+    board = GameBoard()
+    
+    # Test adding sets
+    print("\nTesting adding sets...")
+    player_name = "Player 1"
+    set1 = [Card('number', 'red', 5), Card('number', 'blue', 5), Card('number', 'green', 5)]
+    set2 = [Card('number', 'red', 7), Card('number', 'blue', 7), Card('number', 'green', 7)]
+    
+    board.add_phase_set(player_name, set1)
+    board.add_phase_set(player_name, set2)
+    
+    # Test getting sets
+    print("\nTesting getting sets...")
+    player_sets = board.get_sets(player_name)
+    assert len(player_sets) == 2, "Should have two sets"
+    assert len(player_sets[0]) == 3, "First set should have 3 cards"
+    assert len(player_sets[1]) == 3, "Second set should have 3 cards"
+    
+    # Test board display
+    print("\nTesting board display...")
+    display = board.show()
+    assert player_name in display, "Board display should include player name"
+    assert "Set 1" in display, "Board display should show set numbers"
+    assert "Set 2" in display, "Board display should show set numbers"
+    
+    print("✅ Game board tests passed!")
 
 # Add gameboard test to test_all function
 def test_all():
@@ -423,7 +509,10 @@ def test_all():
         test_edge_cases()
         test_laid_down_sets()
         test_player()
-        test_gameboard()  # Add gameboard test
+        test_game()
+        test_phase_validator()
+        test_hit_manager()
+        test_game_board()
         print("\n✅ All tests passed!")
     except AssertionError as e:
         print(f"\n❌ Test failed: {str(e)}")
