@@ -17,4 +17,8 @@ class Card:
             return f'Wild (ID: {self.id})'
         else:
             return f"Unknown Card (ID: {self.id})"
+        
+    def __repr__(self):
+        return f"Card({self.card_type!r}, color={self.color!r}, number={self.number!r}, id={self.id})"
+
     
