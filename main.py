@@ -12,14 +12,14 @@ class Deck:
                 self.cards.append(Card('number', color, number))
                 self.cards.append(Card('number', color, number))
             for _ in range(8):
-                self.cards.append(Card('skip', color))
+                self.cards.append(Card('skip'))
             for _ in range(4):
-                self.cards.append(Card('wild', color))
+                self.cards.append(Card('wild'))
 
 class Card:
     _id_counter = 0
 
-    def __init__(self, card_type, color, number=None):
+    def __init__(self, card_type, color=None, number=None):
         self.card_type = card_type
         self.color = color
         self.number = number
@@ -30,9 +30,9 @@ class Card:
         if self.card_type == 'number':
             return f"{self.color.capitalize()} {self.number} (ID: {self.id})"
         elif self.card_type == 'skip':
-            return f"{self.color.capitalize()} Skip (ID: {self.id})"
+            return f"Skip (ID: {self.id})"
         elif self.card_type == 'wild':
-            return f'{self.color.capitalize()} Wild (ID: {self.id})'
+            return f'Wild (ID: {self.id})'
         else:
             return f"Unknown Card (ID: {self.id})"
         
