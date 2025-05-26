@@ -11,10 +11,12 @@ class Deck:
             for number in range(1,13):
                 self.cards.append(Card('number', color, number))
                 self.cards.append(Card('number', color, number))
-            for _ in range(8):
-                self.cards.append(Card('skip'))
-            for _ in range(4):
-                self.cards.append(Card('wild'))
+        
+        for _ in range(8):
+            self.cards.append(Card('skip'))
+        
+        for _ in range(4):
+            self.cards.append(Card('wild'))
 
 class Card:
     _id_counter = 0
