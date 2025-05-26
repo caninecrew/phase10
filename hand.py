@@ -31,13 +31,25 @@ class Hand:
         """Find sets of cards in the hand of a given size.
         Returns a list of lists containing card IDs that form sets."""
         from collections import defaultdict
-        sets = defaultdict(list)
+        by_number = defaultdict(list)
+        results = []
         
+        # Group cards by number
         for card in self.cards:
-            key = card.number  # Group by number only for sets
-            sets[key].append(card.id)  # Store card ID instead of card object
+            by_number[card.number].append(card.id)
         
-        return [id_group for id_group in sets.values() if len(id_group) >= size]
+        # For each group of same-numbered cards
+        for card_ids in by_number.values():
+            if len(card_ids) >= size:
+                # Split into sets of exactly 'size' cards
+                num_sets = len(card_ids) // size
+                for i in range(num_sets):
+                    start = i * size
+                    end = start + size
+                    if end <= len(card_ids):
+                        results.append(card_ids[start:end])
+        
+        return results
     
     def find_runs(self, size=4):
         """Find runs of consecutive numbers in the hand regardless of color.
@@ -52,7 +64,7 @@ class Hand:
         numbers = sorted(by_number.keys())
         runs = []
         
-        # Look for consecutive sequences
+        # Look for consecutive sequences starting at each possible position
         for i in range(len(numbers) - size + 1):
             potential_run = numbers[i:i + size]
             # Check if numbers are consecutive
@@ -61,7 +73,7 @@ class Hand:
                 # Take first card ID for each number in the run
                 run_ids = [by_number[num][0] for num in potential_run]
                 runs.append(run_ids)
-            
+        
         return runs
 
     def __len__(self):
@@ -81,5 +93,4 @@ class Hand:
     def __repr__(self):
         """Return a detailed string representation of the hand."""
         return f"Hand({self.cards!r})"
-    
-    
+
