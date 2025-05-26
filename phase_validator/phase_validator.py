@@ -38,15 +38,23 @@ class PhaseValidator:
 
     @staticmethod
     def _validate_set(cards):
-        """Validate that cards form a set (same number)."""
+        """Validate that cards form a set (same number, allowing wild cards)."""
         number_cards = [c for c in cards if c.card_type == 'number']
-        if not number_cards:
+        wild_count = sum(1 for c in cards if c.card_type == 'wild')
+
+        if not number_cards and wild_count == 0:
             return False
-        
-        wilds = sum(1 for c in cards if c.card_type == 'wild')
-        different_numbers = len(set(c.number for c in number_cards))
-        
-        return different_numbers + wilds == 1
+
+        # Count occurrences of each number
+        number_counts = {}
+        for card in number_cards:
+            number_counts[card.number] = number_counts.get(card.number, 0) + 1
+
+        # Find the most common number and its count
+        most_common_number_count = max(number_counts.values(), default=0)
+
+        # Check if wild cards can make up the difference to form a set
+        return most_common_number_count + wild_count == len(cards)
 
     @staticmethod
     def _validate_run(cards):
