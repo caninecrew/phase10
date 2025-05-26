@@ -1,7 +1,13 @@
 class Card:
     _id_counter = 0
+    
+    @classmethod
+    def reset_id_counter(cls):
+        """Reset the ID counter. Used mainly for testing."""
+        cls._id_counter = 0
 
     def __init__(self, card_type, color=None, number=None):
+        """Initialize a card with type, color, number and unique ID."""
         self.card_type = card_type
         self.color = color
         self.number = number
@@ -21,4 +27,4 @@ class Card:
     def __repr__(self):
         return f"Card({self.card_type!r}, color={self.color!r}, number={self.number!r}, id={self.id})"
 
-    
+
