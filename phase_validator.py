@@ -31,7 +31,7 @@ class PhaseValidator:
                 if not cls._validate_run(group):
                     return False
             elif req_type == 'color':
-                if not cls._validate_color(group):
+                if not cls._validate_color_set(group):
                     return False
 
         return True
@@ -64,10 +64,8 @@ class PhaseValidator:
         for i in range(len(numbers) - 1):
             gaps += numbers[i + 1] - numbers[i] - 1
 
-        return gaps <= wild_count
-
-    @staticmethod
-    def _validate_color(cards):
+        return gaps <= wild_count    @staticmethod
+    def _validate_color_set(cards):
         """Validate that cards are all the same color."""
         number_cards = [c for c in cards if c.card_type == 'number']
         if not number_cards:
