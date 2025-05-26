@@ -17,6 +17,10 @@ class Deck:
         
         for _ in range(4):
             self.cards.append(Card('wild'))
+        
+    def shuffle(self):
+        import random
+        random.shuffle(self.cards)
 
 class Card:
     _id_counter = 0
