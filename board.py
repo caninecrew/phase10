@@ -1,3 +1,4 @@
+from card import Card
 from laiddownset import LaidDownSet
 
 class GameBoard:
