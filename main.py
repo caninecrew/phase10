@@ -12,10 +12,10 @@ class Deck:
                 self.cards.append(Card('number', color, number))
                 self.cards.append(Card('number', color, number))
         
-        for _ in range(8):
+        for _ in range(4):
             self.cards.append(Card('skip'))
         
-        for _ in range(4):
+        for _ in range(8):
             self.cards.append(Card('wild'))
         
     def shuffle(self):
@@ -34,7 +34,7 @@ class Deck:
         self.cards = self.discard_pile # Take all but the last card from discard pile
         self.discard_pile = [top_card] # Leave one on discard pile
         self.shuffle()
-        
+
 class Card:
     _id_counter = 0
 
