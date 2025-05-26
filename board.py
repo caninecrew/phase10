@@ -3,18 +3,18 @@ from laiddownset import LaidDownSet
 class GameBoard:
     """Tracks all players' laid-down sets during gameplay."""
     def __init__(self):
-        self.player_sets = {}  # Dictionary mapping player names to their laid down sets
-
-    def add_phase_set(self, player, group):
+        self.player_sets = {}  # Dictionary mapping player names to their laid down sets    def add_phase_set(self, player, group, set_type='set'):
         """Add a laid down set for a player.
         
         Args:
             player (str): Player's name
             group (list): List of cards forming the set
+            set_type (str): Type of set ('set', 'run', or 'color')
         """
         if player not in self.player_sets:
             self.player_sets[player] = []
-        self.player_sets[player].append(group)
+        laid_down_set = LaidDownSet(group, set_type)
+        self.player_sets[player].append(laid_down_set)
 
     def get_sets(self, player):
         """Get all laid down sets for a player.
