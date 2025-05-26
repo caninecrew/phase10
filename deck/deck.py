@@ -39,3 +39,13 @@ class Deck:
     def discard(self, card):
         self.discard_pile.append(card)
 
+    def draw_card(self):
+        """Draw a card from the deck. If the deck is empty, reshuffle the discard pile."""
+        if not self.cards:
+            if not self.discard_pile:
+                raise ValueError("No cards left to draw.")
+            self.cards = self.discard_pile
+            self.discard_pile = []
+            self.shuffle()
+        return self.cards.pop()
+
