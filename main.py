@@ -35,6 +35,9 @@ class Deck:
         self.discard_pile = [top_card] # Leave one on discard pile
         self.shuffle()
 
+    def discard(self, card):
+        self.discard_pile.append(card)
+
 class Card:
     _id_counter = 0
 
