@@ -49,3 +49,9 @@ class Deck:
             self.shuffle()
         return self.cards.pop()
 
+    def take_from_discard(self):
+        """Take the top card from the discard pile."""
+        if self.discard_pile:
+            return self.discard_pile.pop()
+        return None
+
