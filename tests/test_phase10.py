@@ -23,16 +23,26 @@ class TestHand:
         hand = Hand()
         
         # Test basic set of 3
-        hand.add(Card('number', 'red', 5))
-        hand.add(Card('number', 'blue', 5))
-        hand.add(Card('number', 'green', 5))
+        hand.add(Card('number', 'red', 5))       # ID: 0
+        hand.add(Card('number', 'blue', 5))      # ID: 1
+        hand.add(Card('number', 'green', 5))     # ID: 2
         sets = hand.find_sets(size=3)
         assert sets == [[0, 1, 2]], "Basic set of 3 test failed"
         
-        # Test set of 4 split into sets of 3
-        hand.add(Card('number', 'yellow', 5))
+        # Test set of 4 generating all possible sets of 3
+        hand.add(Card('number', 'yellow', 5))    # ID: 3
         sets = hand.find_sets(size=3)
-        assert len(sets) == 1 and len(sets[0]) == 3, "Set of 4 should split into set of 3"
+        expected = [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]]
+        assert len(sets) == 4, "Set of 4 should generate 4 possible sets of 3"
+        assert all(s in expected for s in sets), "All possible combinations should be present"
+        
+        # Test multiple sets of different numbers
+        hand.add(Card('number', 'red', 7))       # ID: 4
+        hand.add(Card('number', 'blue', 7))      # ID: 5
+        hand.add(Card('number', 'green', 7))     # ID: 6
+        sets = hand.find_sets(size=3)
+        assert len(sets) == 5, "Should find sets from both 5s and 7s"
+        assert [4, 5, 6] in sets, "Should find the set of 7s"
     
     def test_runs(self):
         Card.reset_id_counter()
