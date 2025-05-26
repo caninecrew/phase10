@@ -1,3 +1,5 @@
+from laiddownset import LaidDownSet
+
 class GameBoard:
     """Tracks all players' laid-down sets during gameplay."""
     def __init__(self):
