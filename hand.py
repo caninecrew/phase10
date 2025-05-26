@@ -52,29 +52,31 @@ class Hand:
         return results
     
     def find_runs(self, size=4):
-        """Find runs of consecutive numbers in the hand regardless of color.
+        """Find runs of cards in the hand of a given size.
         Returns a list of lists containing card IDs that form runs."""
-        from collections import defaultdict
+        results = []
+        # Sort cards by number
+        numbered_cards = [(c.number, c.id) for c in self.cards if c.number is not None]
+        numbered_cards.sort()
         
-        # Group cards by number to handle duplicates
-        by_number = defaultdict(list)
-        for card in self.cards:
-            by_number[card.number].append(card.id)
+        # No runs possible if we have fewer cards than size
+        if len(numbered_cards) < size:
+            return []
+        
+        # Try to find runs starting from each card
+        for i in range(len(numbered_cards) - size + 1):
+            potential_run = numbered_cards[i:i + size]
+            # Check if numbers are sequential
+            is_run = True
+            for j in range(1, len(potential_run)):
+                if potential_run[j][0] != potential_run[j-1][0] + 1:
+                    is_run = False
+                    break
             
-        numbers = sorted(by_number.keys())
-        runs = []
+            if is_run:
+                results.append([card_id for _, card_id in potential_run])
         
-        # Look for consecutive sequences starting at each possible position
-        for i in range(len(numbers) - size + 1):
-            potential_run = numbers[i:i + size]
-            # Check if numbers are consecutive
-            if all(potential_run[j+1] == potential_run[j] + 1 
-                    for j in range(len(potential_run)-1)):
-                # Take first card ID for each number in the run
-                run_ids = [by_number[num][0] for num in potential_run]
-                runs.append(run_ids)
-        
-        return runs
+        return results
 
     def __len__(self):
         """Return the number of cards in the hand."""
