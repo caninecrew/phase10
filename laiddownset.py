@@ -1,3 +1,5 @@
+from card import Card
+
 class LaidDownSet:
     def __init__(self, cards, set_type):
         """Initialize a laid down set of cards.
