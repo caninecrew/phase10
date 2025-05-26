@@ -341,6 +341,78 @@ def test_player():
     assert player.has_laid_down, "Player should be marked as laid down"
     assert len(player.laid_down_sets) == 2, "Should have 2 sets laid down"
 
+def test_gameboard():
+    """Test GameBoard functionality"""
+    from gameboard import GameBoard
+    print("\n🎮 Testing game board functionality...")
+    
+    # Test game initialization
+    print("\nTesting game initialization...")
+    player_names = ["Player 1", "Player 2", "Player 3"]
+    game = GameBoard(player_names)
+    assert len(game.players) == 3, "Should create correct number of players"
+    assert all(len(p.hand) == 10 for p in game.players), "Each player should have 10 cards"
+    
+    # Test phase validation
+    print("\nTesting phase validation...")
+    player = game.get_current_player()
+    # Create a valid phase 1 (two sets of 3)
+    set1 = [Card('number', 'red', 5), Card('number', 'blue', 5), Card('number', 'green', 5)]
+    set2 = [Card('number', 'red', 7), Card('number', 'blue', 7), Card('number', 'green', 7)]
+    assert game.validate_phase(player, [set1, set2]), "Should accept valid phase 1"
+    
+    # Test invalid phase
+    print("\nTesting invalid phase validation...")
+    invalid_set = [Card('number', 'red', 5), Card('number', 'blue', 6), Card('number', 'green', 7)]
+    assert not game.validate_phase(player, [invalid_set]), "Should reject invalid phase"
+    
+    # Test turn execution
+    print("\nTesting turn execution...")
+    initial_hand_size = len(player.hand)
+    success = game.play_turn(draw_from_discard=False, discard_index=0)
+    assert success, "Turn should execute successfully"
+    assert len(player.hand) == initial_hand_size, "Hand size should remain same after draw and discard"
+    assert game.get_current_player() != player, "Should move to next player"
+    
+    # Test round scoring
+    print("\nTesting round scoring...")
+    game.calculate_round_scores()
+    assert all(score >= 0 for score in game.scores.values()), "Scores should be non-negative"
+    
+    # Test game state
+    print("\nTesting game state retrieval...")
+    state = game.get_game_state()
+    assert 'current_player' in state, "Game state should include current player"
+    assert 'scores' in state, "Game state should include scores"
+    assert 'players' in state, "Game state should include player info"
+    
+    # Test wild card validation
+    print("\nTesting wild card usage...")
+    set_with_wild = [
+        Card('number', 'red', 5),
+        Card('number', 'blue', 5),
+        Card('wild', None, None)
+    ]
+    assert game._validate_set(set_with_wild), "Should accept set with wild card"
+    
+    run_with_wild = [
+        Card('number', 'red', 3),
+        Card('wild', None, None),
+        Card('number', 'blue', 5),
+        Card('number', 'green', 6)
+    ]
+    assert game._validate_run(run_with_wild), "Should accept run with wild card"
+    
+    color_with_wild = [
+        Card('number', 'red', 3),
+        Card('number', 'red', 5),
+        Card('wild', None, None)
+    ]
+    assert game._validate_color(color_with_wild), "Should accept color set with wild card"
+    
+    print("✅ GameBoard tests passed!")
+
+# Add gameboard test to test_all function
 def test_all():
     """Run all tests"""
     print("🎮 Starting comprehensive tests...")
@@ -351,6 +423,7 @@ def test_all():
         test_edge_cases()
         test_laid_down_sets()
         test_player()
+        test_gameboard()  # Add gameboard test
         print("\n✅ All tests passed!")
     except AssertionError as e:
         print(f"\n❌ Test failed: {str(e)}")
