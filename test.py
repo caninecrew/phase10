@@ -1,4 +1,5 @@
-from main import Deck, Card
+from deck import Deck
+from card import Card
 
 def test_deck():
     print("🔄 Creating a new deck...")
