@@ -3,14 +3,14 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pytest
-from phase10.card import Card
-from phase10.deck import Deck
-from phase10.hand import Hand
-from phase10.game import Game
-from phase10.phase_validator import PhaseValidator
-from phase10.hit_manager import HitManager
-from phase10.board import GameBoard
-from phase10.player import Player
+from ..card import Card
+from ..deck import Deck
+from ..hand import Hand
+from ..game import Game
+from ..phase_validator import PhaseValidator
+from ..hit_manager import HitManager
+from ..board import GameBoard
+from ..player import Player
 
 class TestCard:
     def test_card_creation(self):
