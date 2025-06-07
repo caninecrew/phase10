@@ -96,6 +96,9 @@ class SinglePlayerGame:
         # Show game state
         self.show_game_state()
         
+        # Show hand before drawing
+        self.show_hand(player)
+        
         # Draw phase
         self.handle_draw_phase(player)
         
