@@ -1,4 +1,4 @@
-from hand import Hand
+from hand.hand import Hand
 
 class Player:
     def __init__(self, name):
@@ -40,10 +40,9 @@ class Player:
 
         print(f"{self.name} attempted to lay down an invalid phase.")
         return False
-    
-    def validate_phase(self, groups):
+      def validate_phase(self, groups):
         """Validate if the given groups satisfy the requirements for the current phase."""
-        from phase_validator import PhaseValidator
+        from phase_validator.phase_validator import PhaseValidator
         return PhaseValidator.validate_phase(self.current_phase, groups)
 
     def show_hand(self):

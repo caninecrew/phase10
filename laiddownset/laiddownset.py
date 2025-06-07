@@ -1,4 +1,4 @@
-from card import Card
+from card.card import Card
 
 class LaidDownSet:
     def __init__(self, cards, set_type):

@@ -1,4 +1,4 @@
-from phase_validator import PhaseValidator
+from phase_validator.phase_validator import PhaseValidator
 
 class HitManager:
     @staticmethod

@@ -1,4 +1,4 @@
-from player import Player
+from player.player import Player
 import random
 
 class BotPlayer(Player):
@@ -93,10 +93,9 @@ class BotPlayer(Player):
                 consecutive_count = 1
         
         return max_consecutive >= 3  # Forms a run of at least 3
-    
-    def _try_lay_down_phase(self):
+      def _try_lay_down_phase(self):
         """Try to lay down the current phase."""
-        from phase_validator import PhaseValidator
+        from phase_validator.phase_validator import PhaseValidator
         
         # Find all possible sets and runs
         sets = self.hand.find_sets(3)

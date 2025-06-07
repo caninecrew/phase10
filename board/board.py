@@ -1,5 +1,5 @@
-from card import Card
-from laiddownset import LaidDownSet
+from card.card import Card
+from laiddownset.laiddownset import LaidDownSet
 from typing import List
 
 class GameBoard:
