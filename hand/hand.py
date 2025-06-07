@@ -1,4 +1,5 @@
 from card.card import Card
+
 class Hand:
     def __init__(self):
         """Initialize an empty hand."""
@@ -9,6 +10,10 @@ class Hand:
         if not isinstance(card, Card):
             raise ValueError("Only Card instances can be added to the hand.")
         self.cards.append(card)
+    
+    def add_card(self, card):
+        """Add a card to the hand (alias for add method)."""
+        return self.add(card)
 
     def remove(self, card):
         """Remove a specific card from the hand."""
